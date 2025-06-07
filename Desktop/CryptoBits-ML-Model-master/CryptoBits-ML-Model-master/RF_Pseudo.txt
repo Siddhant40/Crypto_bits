@@ -1,0 +1,24 @@
+1. Get the data from API or Dataset
+data = getData()
+
+2. Define list of features to extract and divide data into training and testing sets:
+Training set => df_train = data[from 0 to (size(data) - results)]
+Testing set => df_test = data[from (size(data) - results) to end]
+
+3. Extract features and target values:
+Training features => xTrain = df_train[features]
+Training target => yTrain = df_train["Close"]
+Testing features => xTest = df_test[features]
+Testing target => yTest = df_test["Close"]
+
+4. Create a Random Forest Regressor
+rf = RandomForestRegressor(estimators_count = 1000)
+
+5. Train the model on the training data:
+rf.fit(xTrain, yTrain)
+
+6. Make predictions on the testing data:
+predictions = rf.predict(xTest)
+
+7. Return the final predictions:
+return finalPredictions

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+.flex-r-center {    
+    @apply flex flex-row justify-center items-center;
+}
+
+.flex-c-center {
+    @apply flex flex-col justify-center items-center;
+}
+
+.expand-doc {
+    @apply w-[1000px];
+    transition: 0.6s width ease-in-out;
+}
+
+.collapse-doc {
+    @apply w-[200px];
+    transition: 0.6s width ease-in-out;
+}
