@@ -55,10 +55,7 @@ def predictionsRF():
    currency = request.args.get("currency")
    return jsonify(getPredictionsUsingRF(currency))
 
-@app.route('/crypto/model-comparison', methods=["GET"])
-def modelComparison():
-   currency = request.args.get("currency")
-   return jsonify(getModelComparison(currency))
+
 
 @app.route('/crypto/news', methods=["GET"])
 def news():

@@ -29,7 +29,7 @@ def newsScraper():
             newsContentTextList.append(j.text)
 
         newsData.append([str("https://cryptonews.com"+i['href']), str(newsImages[0]["src"]) if len(newsImages)!=0 else None, str(newsHeading[0].text), newsContentTextList])
-        # print(newsData)
+        print(newsData)
         break
 
     return newsData
