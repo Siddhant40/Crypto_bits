@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from flask_cors import CORS, cross_origin
 # from model import getPredictions, getPredictionsUsingLSTM, getPredictionsUsingRF, getPastData, getSettings, saveSettings, getLogs
-from model import getPredictions, getPredictionsUsingRF, getPastData, getSettings, saveSettings, getLogs, getPredictionsUsingLSTM
+from model import getPredictions, getPredictionsUsingRF, getPastData, getSettings, saveSettings, getLogs, getPredictionsUsingLSTM, getModelComparison
 from scraper import newsScraper
 from gevent.pywsgi import WSGIServer
 import os
@@ -54,6 +54,11 @@ def predictionsLSTM():
 def predictionsRF():
    currency = request.args.get("currency")
    return jsonify(getPredictionsUsingRF(currency))
+
+@app.route('/crypto/model-comparison', methods=["GET"])
+def modelComparison():
+   currency = request.args.get("currency")
+   return jsonify(getModelComparison(currency))
 
 @app.route('/crypto/news', methods=["GET"])
 def news():

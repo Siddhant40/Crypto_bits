@@ -60,7 +60,7 @@ def getPredictions(currency):
             print("RF")
             return getPredictionsUsingRF(currency)
     else:
-        return {"message": "error", "data": "Model is inactiveeeeee"}
+        return {"message": "error", "data": "Model is inactive"}
 
 
 def getPredictionsUsingLSTM(currency):
@@ -200,7 +200,7 @@ def getPastData(currency):
         del i[5]
         final_data[count][5] = str(i[5])[0:10]
         count += 1
-    # final_data.reverse()
+    final_data.reverse()
     return final_data
 
 

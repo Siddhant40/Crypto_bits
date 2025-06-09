@@ -33,6 +33,8 @@ export default function Predictions() {
   const [currencies, setCurrencies] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState("BTC");
   const [loading, setLoading] = useState(false);
+  const [comparisonData, setComparisonData] = useState(null);
+  const [comparing, setComparing] = useState(false);
 
   const fetchCurrencies = async () => {
     try {
@@ -89,6 +91,36 @@ export default function Predictions() {
       console.error("Prediction fetch failed", e);
       alert("An error occurred loading the data!");
       setLoading(false);
+    }
+  };
+
+  const compareModels = async () => {
+    setComparing(true);
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:5000/crypto/model-comparison?currency=${selectedCurrency}-USD`
+      );
+      if (res.data.message === "success") {
+        setComparisonData(res.data.data);
+      } else {
+        alert("Failed to compare models. Please try again.");
+      }
+    } catch (e) {
+      console.error("Model comparison failed", e);
+      alert("An error occurred comparing the models!");
+    }
+    setComparing(false);
+  };
+
+  const getBetterModel = (metric) => {
+    if (!comparisonData) return null;
+    const lstmValue = comparisonData.LSTM[metric];
+    const rfValue = comparisonData.RandomForest[metric];
+    
+    if (metric === 'r2') {
+      return lstmValue > rfValue ? 'LSTM' : 'Random Forest';
+    } else {
+      return lstmValue < rfValue ? 'LSTM' : 'Random Forest';
     }
   };
 
@@ -161,13 +193,60 @@ export default function Predictions() {
             }}
           />
         </div>
-        <button
-          className="h-[40px] w-[150px] rounded bg-green-500 text-white"
-          onClick={getPredictions}
-        >
-          Predict
-        </button>
+        <div className="flex gap-4">
+          <button
+            className="h-[40px] w-[150px] rounded bg-green-500 text-white"
+            onClick={getPredictions}
+          >
+            Predict
+          </button>
+          <button
+            className="h-[40px] w-[150px] rounded bg-blue-500 text-white"
+            onClick={compareModels}
+            disabled={comparing}
+          >
+            {comparing ? "Comparing..." : "Compare Models"}
+          </button>
+        </div>
       </div>
+
+      {comparisonData && (
+        <div className="w-full px-8 py-4 bg-gray-800 rounded-lg mb-8">
+          <h3 className="text-white text-lg mb-4">Model Comparison Results</h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h4 className="text-white font-semibold mb-2">MSE (Lower is better)</h4>
+              <div className="text-gray-300">
+                <p>LSTM: {comparisonData.LSTM.mse.toFixed(4)}</p>
+                <p>Random Forest: {comparisonData.RandomForest.mse.toFixed(4)}</p>
+                <p className="text-green-400 mt-2">
+                  Better: {getBetterModel('mse')}
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h4 className="text-white font-semibold mb-2">RMSE (Lower is better)</h4>
+              <div className="text-gray-300">
+                <p>LSTM: {comparisonData.LSTM.rmse.toFixed(4)}</p>
+                <p>Random Forest: {comparisonData.RandomForest.rmse.toFixed(4)}</p>
+                <p className="text-green-400 mt-2">
+                  Better: {getBetterModel('rmse')}
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h4 className="text-white font-semibold mb-2">R² (Higher is better)</h4>
+              <div className="text-gray-300">
+                <p>LSTM: {comparisonData.LSTM.r2.toFixed(4)}</p>
+                <p>Random Forest: {comparisonData.RandomForest.r2.toFixed(4)}</p>
+                <p className="text-green-400 mt-2">
+                  Better: {getBetterModel('r2')}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="w-full h-full flex flex-row justify-center items-center">
